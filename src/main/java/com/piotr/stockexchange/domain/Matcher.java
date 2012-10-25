@@ -1,23 +1,35 @@
 package com.piotr.stockexchange.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
+
 public class Matcher {
-	public MatchResult match(List<BuyOrder> bids, SellOrder ask) {
-		MatchResult result = new MatchResult();
+	public List<Transaction> match(List<BuyOrder> bids, SellOrder ask) {
+		List<Transaction> result = new ArrayList<Transaction>();
 		Long amountResting = ask.getAmount();
 		for (BuyOrder bid : bids) {
-			if (match(bid, ask) && amountResting > 0) {				
+			if (amountResting == 0) {
+				break;
+			}
+			if (match(bid, ask)) {				
 				Transaction transaction = new Transaction();
 				transaction.setBid(bid);
 				transaction.setAsk(ask);
 				transaction.setPrice(getPrice(bid, ask));
-				transaction.setAmount(getAmount(bid, ask));
+				transaction.setAmount(getAmount(bid, amountResting));
 				result.add(transaction);
+				
+				amountResting -= getAmount(bid, amountResting);
 			}
 		}
 		return result;
 		
+	}
+	
+	public List<Transaction> match(List<SellOrder> bids, BuyOrder ask) {
+		return null;
+		// TODO
 	}
 	
 	public double getPrice(BuyOrder bid, SellOrder ask) {
@@ -28,11 +40,19 @@ public class Matcher {
 		return ask.getPrice();
 	}	
 
-	public Long getAmount(BuyOrder bid, SellOrder ask) {
-		if (bid.getAmount() >= ask.getAmount()) {
-			return ask.getAmount();
+	public Long getAmount(BuyOrder bid, Long amountResting) {
+		if (bid.getAmount() >= amountResting) {
+			return amountResting;
 		}
 		return bid.getAmount();
+	}
+	
+
+	public long getAmount(SellOrder ask, Long amountResting) {
+		if (ask.getAmount() >= amountResting) {
+			return amountResting;
+		}
+		return ask.getAmount();
 	}
 	
 	public boolean match(BuyOrder bid, SellOrder ask) {
@@ -67,10 +87,4 @@ public class Matcher {
 		return true;
 	}
 
-	public long getAmount(SellOrder ask, BuyOrder bid) {
-		if (ask.getAmount() >= bid.getAmount()) {
-			return bid.getAmount();
-		}
-		return ask.getAmount();
-	}
 }

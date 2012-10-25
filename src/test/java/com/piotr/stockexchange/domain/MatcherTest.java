@@ -3,6 +3,7 @@ package com.piotr.stockexchange.domain;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -14,14 +15,20 @@ public class MatcherTest {
 		
 		ArrayList<BuyOrder> existingBuyOrders = new ArrayList<BuyOrder>();
 		BuyOrder b1 = new BuyOrder(oil, 10.0, (long)2, "Piotr");
+		BuyOrder b2 = new BuyOrder(oil, 10.0, (long)2, "Piotr");
 		existingBuyOrders.add(b1);
+		existingBuyOrders.add(b2);
 		
-		SellOrder s1 = new SellOrder(oil, 10.0, (long)1, "Paweł");
+		SellOrder s1 = new SellOrder(oil, 10.0, (long)3, "Paweł");
 		
 		Matcher matcher = new Matcher();
-		MatchResult result = matcher.match(existingBuyOrders, s1);
+		List<Transaction> result = matcher.match(existingBuyOrders, s1);
 		
-		assertNotNull(result);
+		assertNotNull(result); // TODO
+		
+		assertEquals(2, result.size());
+		assertEquals(2, result.get(0).getAmount());
+		assertEquals(1, result.get(1).getAmount());
 	}
 	
 	@Test
@@ -69,13 +76,13 @@ public class MatcherTest {
 		SellOrder ask = new SellOrder(oil, 10.0, (long)1, "Paweł");
 		
 		Matcher matcher = new Matcher();
-		assertEquals((long)1, (long)matcher.getAmount(bid, ask));
+		assertEquals((long)1, (long)matcher.getAmount(bid, 1L));
 		
 		ask.setAmount((long) 2);
-		assertEquals((long)2, (long)matcher.getAmount(bid, ask));
+		assertEquals((long)2, (long)matcher.getAmount(bid, 2L));
 		
 		ask.setAmount((long) 3);
-		assertEquals((long)2, (long)matcher.getAmount(bid, ask));
+		assertEquals((long)2, (long)matcher.getAmount(bid, 3L));
 	}
 	
 
@@ -87,13 +94,13 @@ public class MatcherTest {
 		SellOrder ask = new SellOrder(oil, 10.0, 2L, "Paweł");
 		
 		Matcher matcher = new Matcher();
-		assertEquals((long)1, (long)matcher.getAmount(ask, bid));
+		assertEquals((long)1, (long)matcher.getAmount(ask, 1L));
 		
 		bid.setAmount((long) 2);
-		assertEquals((long)2, (long)matcher.getAmount(ask, bid));
+		assertEquals((long)2, (long)matcher.getAmount(ask, 2L));
 		
 		bid.setAmount((long) 3);
-		assertEquals((long)2, (long)matcher.getAmount(ask, bid));
+		assertEquals((long)2, (long)matcher.getAmount(ask, 3L));
 	}
 	
 
