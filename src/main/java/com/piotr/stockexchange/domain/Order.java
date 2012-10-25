@@ -64,8 +64,17 @@ public abstract class Order {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	
 
+	public Order(Product product, Double price, Long amount, String username) {
+		this.product = product;
+		this.price = price;
+		this.amount = amount;
+		this.username = username;
+	}
+	
+	public Order() {
+		
+	}
 	
 
 }
