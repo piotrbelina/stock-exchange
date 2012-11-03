@@ -32,24 +32,18 @@ public class OrderDao {
 		return em.find(SellOrder.class, id);
 	}
 	
-	public List<Order> getSellOrdersByProduct(Product product) {
-		String query = "select o from SellOrder o where o.product = :product order by o.price asc";
-		return getOrdersQueryByProduct(product, query)
-				.getResultList();
+	public List<SellOrder> getSellOrdersByProduct(Product product) {
+		String query = "select o from SellOrder o where o.product = :product and o.finished = false order by o.price asc";
+		return em.createQuery(query, SellOrder.class)
+                .setParameter("product", product).getResultList();
 	}
 	
-
-	public List<Order> getBuyOrdersByProduct(Product product) {
-		String query = "select o from BuyOrder o where o.product = :product order by o.price desc";
-		return getOrdersQueryByProduct(product, query)
-				.getResultList();
+	public List<BuyOrder> getBuyOrdersByProduct(Product product) {
+		String query = "select o from BuyOrder o where o.product = :product and o.finished = false order by o.price desc";
+		return em.createQuery(query, BuyOrder.class)
+		        .setParameter("product", product).getResultList();
+				
 	}
 	
-	
-	
-	protected TypedQuery<Order> getOrdersQueryByProduct(Product product, String query) { 
-		return em.createQuery(query, Order.class)
-			.setParameter("product", product);
-	}
 	
 }

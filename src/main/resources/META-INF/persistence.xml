@@ -5,13 +5,11 @@
              version="1.0">
 
 	<persistence-unit name="application" transaction-type="RESOURCE_LOCAL">
-
-        <class>com.piotr.stockexchange.Item</class>
-        <class>com.piotr.stockexchange.Order</class>
         
         <class>com.piotr.stockexchange.domain.BuyOrder</class>
         <class>com.piotr.stockexchange.domain.SellOrder</class>
         <class>com.piotr.stockexchange.domain.Product</class>
+        <class>com.piotr.stockexchange.domain.Transaction</class>
         
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
